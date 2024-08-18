@@ -88,7 +88,7 @@ def user_input(user_question, course_name):
 
 # Streamlit application
 def main():
-    st.title("Course Information Assistant")
+    st.title("AURA-G : The Course Guide")
 
     directory = "./pdfs"  # Replace with the actual path to your PDF directory
     course_name = st.text_input("Enter the course name:")
