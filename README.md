@@ -77,4 +77,4 @@ For any questions or issues, feel free to open an issue on GitHub or contact the
 
 ---
 
-This README will guide others in using your project effectively and contribute to it if they wish. 📚👨‍🏫👩‍🏫
+This README will guide others in using your project effectively and contribute to it if they wish.
