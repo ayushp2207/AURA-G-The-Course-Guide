@@ -12,14 +12,15 @@ from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
 
-api_key = st.secrets["GOOGLE_API_KEY"]
+api_key = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=api_key)
 
-def get_pdf_text(pdf_file):
+def get_pdf_text_from_file(file_path):
     text = ""
-    pdf_reader = PdfReader(pdf_file)
-    for page in pdf_reader.pages:
-        text += page.extract_text()
+    with open(file_path, 'rb') as pdf_file:
+        pdf_reader = PdfReader(pdf_file)
+        for page in pdf_reader.pages:
+            text += page.extract_text()
     return text
 
 def get_text_chunks(text):
@@ -27,18 +28,20 @@ def get_text_chunks(text):
     chunks = text_splitter.split_text(text)
     return chunks
 
-def create_vector_store(text_chunks):
+def create_vector_store_for_pdf(pdf_path):
+    text = get_pdf_text_from_file(pdf_path)
+    chunks = get_text_chunks(text)
+    
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001",
         google_api_key=api_key
     )
-    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
-    return vector_store
+    vector_store = FAISS.from_texts(chunks, embedding=embeddings)
+    vector_store.save_local("faiss_index")
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question as detailed as possible from the provided context and use your own tools also and describe the context and provide related answer. Make sure to provide all the details. If the person asks you about the name of the faculty, GIVE A VERY DETAILED INTERACTIVE ANSWER, like respond with "The course will be taught by Professor xyz". If the person asks you about the schedule, make sure to respond in a table format with weekdays clearly mentioned. In case you don't find the course, make sure to respond with an apology. 
-    If the answer is not in the provided context, just say, "The answer is not available in the context." Do not provide a wrong answer.\n\n
+    Answer the question as detailed as possible from the provided context and use your own tools also and describe the context and provide related answer. If the answer is not in the provided context, just say, "The answer is not available in the context." Do not provide a wrong answer.\n\n
     Context:\n {context}\n
     Question: \n{question}\n
     Answer:
@@ -50,9 +53,16 @@ def get_conversational_chain():
 
     return chain
 
-def process_question(vector_store, user_question):
+def user_input(user_question, course_name):
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    
+    # Load the vector store
+    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+    
+    # Find the relevant document based on course name
+    docs = new_db.similarity_search(course_name)
+
     chain = get_conversational_chain()
-    docs = vector_store.similarity_search(user_question)
     
     response = chain(
         {"input_documents": docs, "question": user_question},
@@ -62,22 +72,33 @@ def process_question(vector_store, user_question):
     return response["output_text"]
 
 def main():
-    st.set_page_config(page_title="Course Information Chatbot", page_icon="🎓")
-    st.header("Course Information Chatbot 📚")
+    st.title("Course Q&A System")
+    st.write("Enter the course name and your question about the course.")
 
-    pdf_file = st.file_uploader("Upload your course PDF here", type="pdf")
-
-    if pdf_file is not None:
-        text = get_pdf_text(pdf_file)
-        text_chunks = get_text_chunks(text)
-        vector_store = create_vector_store(text_chunks)
-
-        user_question = st.text_input("Ask a question about the course:")
-
-        if user_question:
-            response = process_question(vector_store, user_question)
-            st.write("Reply:")
-            st.write(response)
+    directory = "./pdfs"  # Replace with the actual path to your PDF directory
+    course_name = st.text_input("Enter the course name:").replace(" ", "").lower()
+    
+    # Find the matching PDF based on course name
+    matching_pdf = None
+    if st.button("Find Course"):
+        for filename in os.listdir(directory):
+            if filename.endswith(".pdf"):
+                # Normalize the filename by removing spaces and converting to lowercase
+                normalized_filename = filename.replace(" ", "").lower()
+                if course_name in normalized_filename:
+                    matching_pdf = os.path.join(directory, filename)
+                    break
+        
+        if matching_pdf:
+            st.success(f"Matched PDF: {matching_pdf}")
+            create_vector_store_for_pdf(matching_pdf)
+            
+            user_question = st.text_input("Ask a question about the course:")
+            if user_question and st.button("Get Answer"):
+                response = user_input(user_question, course_name)
+                st.write(f"**Answer:** {response}")
+        else:
+            st.error("No matching course found.")
 
 if __name__ == "__main__":
     main()
