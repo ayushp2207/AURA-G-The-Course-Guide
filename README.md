@@ -26,8 +26,8 @@ Follow these steps to set up the project locally:
 
 1. **Clone the Repository:** 📂
     ```bash
-    git clone https://github.com/yourusername/course-information-assistant.git
-    cd course-information-assistant
+    git clone https://github.com/ayushp2207/AURA-G-The-Course-Guide
+    cd AURA-G-The-Course-Guide
     ```
 
 2. **Install the Required Packages:** 📦
