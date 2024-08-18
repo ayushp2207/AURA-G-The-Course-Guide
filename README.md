@@ -1,12 +1,23 @@
 # Course Information Assistant
 
-Welcome to the **Course Information Assistant**! This project allows you to interactively inquire about university courses using PDF files as the source of information. The system leverages AI to provide structured, clear, and engaging responses to your questions.
+Certainly. Here's an edited version of the README content that incorporates information about RAG without referring to specific code:
 
-## Features
+Course Information Assistant
+Welcome to the **Course Information Assistant**! This project allows you to interactively inquire about Ahmedabad University's courses. The system leverages AI and Retrieval-Augmented Generation (RAG) to provide structured, clear, and engaging responses to your questions.
 
-- **Interactive Q&A:** Ask questions about course names, faculty, schedules, teaching materials, evaluation components, and more.
-- **AI-Powered Responses:** Utilizes Google Gemini API and FAISS vector store for accurate and context-based answers.
-- **Streamlit Interface:** Easy-to-use web interface for seamless interaction.
+# Features
+* **Interactive Q&A:** Ask questions about course names, faculty, schedules, teaching materials, evaluation components, and more.
+* **AI-Powered Responses:** Utilizes advanced language models and RAG for accurate and context-based answers.
+* **Streamlit Interface:** Easy-to-use web interface for seamless interaction.
+
+Retrieval-Augmented Generation (RAG)
+This project implements RAG to enhance the quality and accuracy of responses:
+
+1. **Retrieval:** The system indexes course information from PDF files and retrieves relevant content based on user queries.
+2. **Augmentation:** Retrieved information is used to provide context to the AI model.
+3. **Generation:** An AI model generates natural language responses, combining its knowledge with the retrieved course-specific information.
+
+By using RAG, the Course Information Assistant can provide more accurate, contextually relevant, and up-to-date answers about specific courses, enhancing the overall user experience.
 
 ## Installation
 
