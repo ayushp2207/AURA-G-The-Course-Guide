@@ -41,10 +41,23 @@ def create_vector_store_for_pdf(pdf_path):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question as detailed as possible from the provided context and use your own tools also and describe the context and provide related answer. Make sure to provide all the details. If the person asks you about the name of the faculty, GIVE A VERY DETAILED INTERACTIVE ANSWER, like respond with "The course will be taught by Professor xyz". If the person asks you about the schedule, make sure to respond in a table format with weekdays clearly mentioned. In case you don't find the course, make sure to respond with an apology. 
-    If the answer is not in the provided context, just say, "The answer is not available in the context." Do not provide a wrong answer.\n\n
-    Context:\n {context}\n
-    Question: \n{question}\n
+    Answer the user's question as thoroughly as possible using the provided course context. Ensure your response is structured, clear, and engaging. 
+
+    For example:
+    - **Course Name**: Provide a brief yet engaging description.
+    - **Faculty**: Respond with "The course will be taught by Professor [Name]," adding any interesting details about the professor to make the answer more engaging.
+    - **Schedule**: Present the schedule in a table format, clearly highlighting the days and times of the classes.
+    - **Teaching Material**: Provide details on the materials used in a friendly tone, perhaps suggesting how students might find them helpful.
+    - **Evaluation Components**: Outline the evaluation methods clearly and provide tips on how students can excel.
+
+    Always aim to make the response enjoyable for the user. If the answer is not found in the context, respond with "The answer is not available in the provided context." Avoid providing incorrect information.
+
+    Context:
+    {context}
+
+    Question: 
+    {question}
+
     Answer:
     """
 
@@ -53,6 +66,7 @@ def get_conversational_chain():
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
 
     return chain
+
 
 def user_input(user_question, course_name):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
