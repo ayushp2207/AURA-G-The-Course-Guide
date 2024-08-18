@@ -1,8 +1,8 @@
 Here's the README with relevant emojis added:
 
-# Course Information Assistant 🎓💬
+# AURA-G : The Course Guide 🎓💬
 
-Welcome to the **Course Information Assistant**! 🚀 This project allows you to interactively inquire about Ahmedabad University's courses. The system leverages AI and Retrieval-Augmented Generation (RAG) to provide structured, clear, and engaging responses to your questions.
+Welcome to the **AURA-G**! 🚀 This project allows you to interactively inquire about Ahmedabad University's courses. The system leverages AI and Retrieval-Augmented Generation (RAG) to provide structured, clear, and engaging responses to your questions.
 
 # Features 
 
