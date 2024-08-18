@@ -41,7 +41,8 @@ def create_vector_store_for_pdf(pdf_path):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question as detailed as possible from the provided context and use your own tools also and describe the context and provide related answer. If the answer is not in the provided context, just say, "The answer is not available in the context." Do not provide a wrong answer.\n\n
+    Answer the question as detailed as possible from the provided context and use your own tools also and describe the context and provide related answer. Make sure to provide all the details. If the person asks you about the name of the faculty, GIVE A VERY DETAILED INTERACTIVE ANSWER, like respond with "The course will be taught by Professor xyz". If the person asks you about the schedule, make sure to respond in a table format with weekdays clearly mentioned. In case you don't find the course, make sure to respond with an apology. 
+    If the answer is not in the provided context, just say, "The answer is not available in the context." Do not provide a wrong answer.\n\n
     Context:\n {context}\n
     Question: \n{question}\n
     Answer:
@@ -71,34 +72,32 @@ def user_input(user_question, course_name):
 
     return response["output_text"]
 
+# Streamlit application
 def main():
-    st.title("Course Q&A System")
-    st.write("Enter the course name and your question about the course.")
+    st.title("Course Information Assistant")
 
     directory = "./pdfs"  # Replace with the actual path to your PDF directory
-    course_name = st.text_input("Enter the course name:").replace(" ", "").lower()
-    
-    # Find the matching PDF based on course name
-    matching_pdf = None
-    if st.button("Find Course"):
+    course_name = st.text_input("Enter the course name:")
+
+    if course_name:
+        course_name = course_name.replace(" ", "").lower()
+        
+        matching_pdf = None
         for filename in os.listdir(directory):
             if filename.endswith(".pdf"):
-                # Normalize the filename by removing spaces and converting to lowercase
                 normalized_filename = filename.replace(" ", "").lower()
                 if course_name in normalized_filename:
                     matching_pdf = os.path.join(directory, filename)
                     break
         
         if matching_pdf:
-            st.success(f"Matched PDF: {matching_pdf}")
             create_vector_store_for_pdf(matching_pdf)
-            
             user_question = st.text_input("Ask a question about the course:")
-            if user_question and st.button("Get Answer"):
+            if user_question:
                 response = user_input(user_question, course_name)
-                st.write(f"**Answer:** {response}")
+                st.write("Reply: ", response)
         else:
-            st.error("No matching course found.")
+            st.write("No matching course found.")
 
 if __name__ == "__main__":
     main()
