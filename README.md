@@ -6,7 +6,6 @@ Welcome to the **Course Information Assistant**! This project allows you to inte
 
 - **Interactive Q&A:** Ask questions about course names, faculty, schedules, teaching materials, evaluation components, and more.
 - **AI-Powered Responses:** Utilizes Google Gemini API and FAISS vector store for accurate and context-based answers.
-- **PDF Integration:** Extracts course details from PDF files stored in a designated folder.
 - **Streamlit Interface:** Easy-to-use web interface for seamless interaction.
 
 ## Installation
@@ -45,7 +44,7 @@ Follow these steps to set up the project locally:
 
 4. **Add PDF Files:**
 
-    Place your course PDFs in the `pdfs` folder. Ensure the filenames are descriptive of the course (e.g., `data_science.pdf`).
+    Place your course PDFs in the `pdfs` folder. Ensure the filenames contain course code followed by name of the course (e.g., `CSD102 - Data Science.pdf`).
 
 ## Usage
 
@@ -71,10 +70,6 @@ Follow these steps to set up the project locally:
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute, please fork the repository and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
